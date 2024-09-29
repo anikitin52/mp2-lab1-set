@@ -38,12 +38,12 @@ TBitField::~TBitField()
 
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
 {
-	return n / 32;
+	return (n / (sizeof(TELEM) * 8));
 }
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-	return 1u << (n % 32);
+	return TELEM(1) << (sizeof(TELEM) * 8 - n - 1);
 }
 
 // доступ к битам битового поля
@@ -81,22 +81,22 @@ int TBitField::GetBit(const int n) const // получить значение б
 
 TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 {
-	if (this != &bf)
-	{
+	if (this != &bf) {
 		delete[] pMem;
-		BitLen = bf.BitLen;
-		MemLen = bf.MemLen;
+		this->BitLen = bf.BitLen;
+		this->MemLen = bf.MemLen;
 		pMem = new TELEM[MemLen];
 		for (int i = 0; i < MemLen; i++)
 		{
-			pMem[i] = bf.pMem[i];
+			this->pMem[i] = bf.pMem[i];
 		}
 	}
 	return *this;
+	
 }
 
 int TBitField::operator==(const TBitField& bf) const // сравнение
-{
+{	
 	if (BitLen != bf.BitLen) {
 		return 0;
 	}
@@ -123,7 +123,7 @@ int TBitField::operator!=(const TBitField& bf) const // сравнение
 
 TBitField TBitField::operator|(const TBitField& bf) // операция "или"
 {
-	TBitField res(BitLen);
+	TBitField res(max(BitLen, bf.BitLen));
 	for (int i = 0; i < MemLen; i++) {
 		res.pMem[i] = pMem[i] | bf.pMem[i];
 	}
@@ -132,7 +132,7 @@ TBitField TBitField::operator|(const TBitField& bf) // операция "или"
 
 TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 {
-	TBitField res(BitLen);
+	TBitField res(max(BitLen, bf.BitLen));
 	for (int i = 0; i < MemLen; i++) {
 		res.pMem[i] = pMem[i] & bf.pMem[i];
 	}
@@ -141,11 +141,21 @@ TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 
 TBitField TBitField::operator~(void) // отрицание
 {
-	TBitField res(BitLen);
-	for (int i = 0; i < MemLen; i++) {
-		res.pMem[i] = ~pMem[i];
+	TBitField result = *this;
+	int bit;
+	int pos;
+
+	for (int i = 0; i < MemLen; i++)
+		result.pMem[i] = ~pMem[i];
+	
+	for (int i = BitLen; i < MemLen * sizeof(TELEM) * 8; i++) {
+		bit = i / (sizeof(TELEM) * 8);
+		pos = i % (sizeof(TELEM) * 8);
+
+		result.pMem[bit] = result.pMem[bit] & ~GetMemMask(pos);
 	}
-	return res;
+
+	return result;
 }
 
 // ввод/вывод
