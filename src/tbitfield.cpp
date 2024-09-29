@@ -8,7 +8,10 @@
 #include "tbitfield.h"
 
 TBitField::TBitField(int len)
-{
+{	
+	if (len <= 0) {
+		throw "Error! The length of the bit field must be positive";
+	}
 	BitLen = len;
 	MemLen = (len + 31) / 32;
 	pMem = new TELEM[MemLen];
@@ -52,16 +55,25 @@ int TBitField::GetLength(void) const // получить длину (к-во б�
 
 void TBitField::SetBit(const int n) // установить бит
 {
+	if (n < 0 | n > BitLen) {
+		throw "Error! Invalid index";
+	}
 	pMem[GetMemIndex(n)] = GetMemMask(n);
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
 {
+	if (n < 0 | n > BitLen) {
+		throw "Error! Invalid index";
+	}
 	pMem[GetMemIndex(n)] &= ~GetMemMask(n);
 }
 
 int TBitField::GetBit(const int n) const // получить значение бита
 {
+	if (n < 0 | n > BitLen) {
+		throw "Error! Invalid index";
+	}
 	return (pMem[GetMemIndex(n)] & GetMemMask(n)) != 0;
 }
 
