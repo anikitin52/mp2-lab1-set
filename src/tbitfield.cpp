@@ -58,7 +58,9 @@ void TBitField::SetBit(const int n) // установить бит
 	if (n < 0 | n > BitLen) {
 		throw "Error! Invalid index";
 	}
-	pMem[GetMemIndex(n)] = GetMemMask(n);
+	TELEM bitmask = GetMemMask(n % (sizeof(TELEM) * 8));
+	int index = GetMemIndex(n);
+	pMem[index] |= bitmask;
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
@@ -142,12 +144,12 @@ TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 TBitField TBitField::operator~(void) // отрицание
 {
 	TBitField result = *this;
-	int bit;
-	int pos;
 
 	for (int i = 0; i < MemLen; i++)
 		result.pMem[i] = ~pMem[i];
 	
+	int bit;
+	int pos;
 	for (int i = BitLen; i < MemLen * sizeof(TELEM) * 8; i++) {
 		bit = i / (sizeof(TELEM) * 8);
 		pos = i % (sizeof(TELEM) * 8);
