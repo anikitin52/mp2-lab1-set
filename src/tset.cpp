@@ -14,19 +14,16 @@ TSet::TSet(int mp) : MaxPower(mp), BitField(mp)
 // Конструктор копирования
 TSet::TSet(const TSet& s) : MaxPower(s.MaxPower), BitField(s.BitField)
 {
-    MaxPower = s.MaxPower;
-    BitField = s.BitField;
 }
 // Конструктор преобразования типа
 TSet::TSet(const TBitField& bf) : MaxPower(bf.GetLength()), BitField(bf)
 {
-    this->MaxPower = bf.GetLength();
-    this->BitField = bf;
 }
 // Преобразование типа к битовому полю
 TSet::operator TBitField()
 {
-    return BitField;
+    TBitField res(BitField);
+    return res;
 }
 // Доступ к битам
 int TSet::GetMaxPower(void) const
@@ -46,9 +43,7 @@ void TSet::InsElem(const int Elem) // включение элемента мно
     if (Elem < 0 || Elem >= MaxPower) {
         throw "Error!";
     }
-    if (Elem >= 0 && Elem < MaxPower) {
-        BitField.SetBit(Elem);
-    }
+    BitField.SetBit(Elem);
 }
 void TSet::DelElem(const int Elem)
 {
@@ -91,19 +86,12 @@ TSet TSet::operator-(const int Elem)
 }
 TSet TSet::operator+(const TSet& s)
 {
-    if (MaxPower != s.MaxPower) {
-        throw "Error!";
-    }
-
     TSet res(max(MaxPower, s.MaxPower));
     res.BitField = BitField | s.BitField;
     return res;
 }
 TSet TSet::operator*(const TSet& s)
 {
-    if (MaxPower != s.MaxPower) {
-        throw "Error!";
-    }
     return TSet(BitField & s.BitField);
 }
 TSet TSet::operator~()
