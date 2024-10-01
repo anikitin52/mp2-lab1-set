@@ -10,7 +10,7 @@
 TBitField::TBitField(int len)
 {	
 	if (len <= 0) {
-		throw "Error! The length of the bit field must be positive";
+		throw "Error!";
 	}
 	BitLen = len;
 	MemLen = (len + 31) / 32;
@@ -43,7 +43,7 @@ int TBitField::GetMemIndex(const int n) const // индекс Мем для би
 
 TELEM TBitField::GetMemMask(const int n) const // битовая маска для бита n
 {
-	return TELEM(1) << (sizeof(TELEM) * 8 - n - 1);
+	return ((TELEM)1) << n - MemLen - 1;
 }
 
 // доступ к битам битового поля
@@ -58,17 +58,15 @@ void TBitField::SetBit(const int n) // установить бит
 	if ((n < 0) || (n > BitLen)) {
 		throw "Error!";
 	}
-
 	TELEM bitmask = GetMemMask(n);
 	int index = GetMemIndex(n);
-
 	pMem[index] = pMem[index] | bitmask;
 }
 
 void TBitField::ClrBit(const int n) // очистить бит
 {
 	if (n < 0 | n > BitLen) {
-		throw "Error! Invalid index";
+		throw "Error!";
 	}
 	pMem[GetMemIndex(n)] &= ~GetMemMask(n);
 }
@@ -76,7 +74,7 @@ void TBitField::ClrBit(const int n) // очистить бит
 int TBitField::GetBit(const int n) const // получить значение бита
 {
 	if (n < 0 | n > BitLen) {
-		throw "Error! Invalid index";
+		throw "Error!";
 	}
 	return (pMem[GetMemIndex(n)] & GetMemMask(n)) != 0;
 }
@@ -86,9 +84,9 @@ int TBitField::GetBit(const int n) const // получить значение б
 TBitField& TBitField::operator=(const TBitField& bf) // присваивание
 {
 	if (this != &bf) {
-		delete[] pMem;
 		this->BitLen = bf.BitLen;
 		this->MemLen = bf.MemLen;
+		delete[] pMem;
 		pMem = new TELEM[MemLen];
 		for (int i = 0; i < MemLen; i++)
 		{
@@ -145,18 +143,9 @@ TBitField TBitField::operator&(const TBitField& bf) // операция "и"
 
 TBitField TBitField::operator~(void) // отрицание
 {
-	TBitField result = *this;
-
-	for (int i = 0; i < MemLen; i++)
-		result.pMem[i] = ~pMem[i];
-	
-	int bit;
-	int pos;
-	for (int i = BitLen; i < MemLen * sizeof(TELEM) * 8; i++) {
-		bit = i / (sizeof(TELEM) * 8);
-		pos = i % (sizeof(TELEM) * 8);
-
-		result.pMem[bit] = result.pMem[bit] & ~GetMemMask(pos);
+	TBitField result(*this); 
+	for (int i = 0; i < BitLen; i++) { 
+		result.pMem[result.GetMemIndex(i)] ^= result.GetMemMask(i); 
 	}
 
 	return result;
