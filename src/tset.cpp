@@ -19,18 +19,18 @@ TSet::TSet(const TSet& s) : MaxPower(s.MaxPower), BitField(s.BitField)
 TSet::TSet(const TBitField& bf) : MaxPower(bf.GetLength()), BitField(bf)
 {
 }
-// Преобразование типа к битовому полю
+//преобразование к BitField
 TSet::operator TBitField()
 {
     TBitField res(BitField);
     return res;
 }
 // Доступ к битам
-int TSet::GetMaxPower(void) const
+int TSet::GetMaxPower(void) const // максимальное к-во элементов
 {
     return MaxPower;
 }
-int TSet::IsMember(const int Elem) const
+int TSet::IsMember(const int Elem) const // проверка содержания элемента множества
 {
     if (Elem < 0 || Elem >= MaxPower) {
         throw "Error!";
@@ -45,7 +45,7 @@ void TSet::InsElem(const int Elem) // включение элемента мно
     }
     BitField.SetBit(Elem);
 }
-void TSet::DelElem(const int Elem)
+void TSet::DelElem(const int Elem) // исключение элемента множества
 {
     if (Elem < 0 || Elem >= MaxPower) {
         throw "Error!";
@@ -90,11 +90,11 @@ TSet TSet::operator+(const TSet& s)
     res.BitField = BitField | s.BitField;
     return res;
 }
-TSet TSet::operator*(const TSet& s)
+TSet TSet::operator*(const TSet& s) // пересечение
 {
     return TSet(BitField & s.BitField);
 }
-TSet TSet::operator~()
+TSet TSet::operator~() // дополнение
 {
     return TSet(~BitField);
 }
