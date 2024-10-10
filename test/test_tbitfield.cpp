@@ -327,3 +327,12 @@ TEST(TBitField, can_do_AND_correctly) {
     EXPECT_EQ(bf3, res1);
     EXPECT_EQ(bf3, res2);
 }
+
+TEST(TBitField, new_test) {
+    const int size = 70, bits = 33;
+    TBitField bf(size);
+    for (int i = 0; i < bits; i++) {
+        bf.SetBit(i);
+    }
+    ASSERT_NO_THROW(bf);
+}
