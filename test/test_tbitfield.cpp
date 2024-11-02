@@ -336,3 +336,17 @@ TEST(TBitField, new_test) {
     }
     ASSERT_NO_THROW(bf);
 }
+
+TEST(TBitField, new_test2) {
+    const int size = 70;
+    TBitField bf(size);
+    bf.SetBit(9);
+    for (int i = 0; i < size; i++) {
+        if (i == 9) {
+            ASSERT_EQ(bf.GetBit(9), 1);
+        }
+        else {
+            ASSERT_EQ(bf.GetBit(i), 0);
+        }
+    }
+}
