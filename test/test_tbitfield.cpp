@@ -334,7 +334,14 @@ TEST(TBitField, new_test) {
     for (int i = 0; i < bits; i++) {
         bf.SetBit(i);
     }
-    ASSERT_NO_THROW(bf);
+    for (int i = 0; i < size; i++) {
+        if (i < bits) {
+            ASSERT_EQ(bf.GetBit(i), 1);
+        }
+        else {
+            ASSERT_EQ(bf.GetBit(i), 0);
+        }
+    }
 }
 
 TEST(TBitField, new_test2) {
