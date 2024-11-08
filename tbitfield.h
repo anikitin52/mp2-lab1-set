@@ -11,7 +11,7 @@
 #include <iostream>
 
 using namespace std;
-
+// int, char, long long
 typedef unsigned int TELEM;
 
 class TBitField

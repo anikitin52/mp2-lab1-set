@@ -14,7 +14,7 @@ TBitField::TBitField(int len)
     }
 
     BitLen = len;
-    MemLen = (BitLen + sizeof(TELEM) * 8 - 1) / (sizeof(TELEM) * 8);
+    MemLen = (BitLen + sizeof(TELEM) * 8 - 1) / (sizeof(TELEM) * 8);  
     pMem = new TELEM[MemLen];
     for (int i = 0; i < MemLen; i++)
         pMem[i] = 0;
@@ -30,7 +30,7 @@ TBitField::TBitField(const TBitField& bf) // конструктор копиро
         pMem[i] = bf.pMem[i];
     }
 }
-//+ + + + + +
+
 TBitField::~TBitField()
 {
     delete[] pMem;
@@ -60,7 +60,7 @@ void TBitField::SetBit(const int n)
     }
     int index = n / (sizeof(TELEM) * 8); // Номер элемента массива
     int offset = n % (sizeof(TELEM) * 8); // Номер бита в элементе
-    pMem[index] |= (1U << offset); // Установка бита
+    pMem[index] |= (static_cast<TELEM>(1U) << offset); // Установка бита
 }
 
 
@@ -71,7 +71,7 @@ void TBitField::ClrBit(const int n)
     }
     int index = n / (sizeof(TELEM) * 8); // Номер элемента массива
     int offset = n % (sizeof(TELEM) * 8); // Номер бита в элементе
-    pMem[index] &= ~(1U << offset); // Очистка бита
+    pMem[index] &= ~(static_cast<TELEM>(1U) << offset); // Очистка бита
 }
 
 
@@ -82,7 +82,7 @@ int TBitField::GetBit(const int n) const
     }
     int index = n / (sizeof(TELEM) * 8); // Номер элемента массива
     int offset = n % (sizeof(TELEM) * 8); // Номер бита в элементе
-    return (pMem[index] & (1U << offset)) ? 1 : 0; // Проверка бита
+    return (pMem[index] & (static_cast<TELEM>(1U) << offset)) ? 1 : 0; // Проверка бита
 }
 
 
